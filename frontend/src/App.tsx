@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Table, Button, Form, Modal, Alert } from 'react-bootstrap';
-import { IImage } from './dtos/ImageModel'; // Đảm bảo đường dẫn đúng
+import { IImage } from './dtos/ImageModel';
 import ImageItem from './components/ImageItem';
 
 const App: React.FC = () => {
