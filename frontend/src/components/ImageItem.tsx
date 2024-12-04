@@ -4,7 +4,7 @@ import { IImage } from "../dtos/ImageModel";
 
 interface ImageItemProps {
   image: IImage;
-  onDelete: (id: number) => void;
+  onDelete: (image: IImage) => void;
   onEdit: (image: IImage) => void;
 }
 
@@ -23,7 +23,7 @@ const ImageItem: React.FC<ImageItemProps> = ({ image, onDelete, onEdit }) => {
         <Button variant="warning" onClick={() => onEdit(image)}>
           Edit
         </Button>
-        <Button variant="danger" onClick={() => onDelete(image.id)}>
+        <Button variant="danger" onClick={() => onDelete(image)}>
           Delete
         </Button>
       </td>

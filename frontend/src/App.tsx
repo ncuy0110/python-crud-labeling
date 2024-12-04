@@ -12,6 +12,7 @@ const App: React.FC = () => {
   const [imageMetadata, setImageMetadata] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
 
   // Hàm lấy dữ liệu từ API
   const fetchImages = async () => {
@@ -24,14 +25,25 @@ const App: React.FC = () => {
     }
   };
 
+  const openConfirmDeleteDialog = (image: IImage) => {
+    setCurrentImage(image);
+    setShowModalDelete(true); // Mở Modal khi chọn Delete
+  };
+
+  const closeDialog = () => {
+    setShowModalDelete(false);
+  };
+
   // Hàm xóa ảnh khỏi danh sách
-  const handleDeleteImage = async (id: number) => {
+  const handleDeleteImage = async () => {
     try {
+      const id = currentImage?.id;
       const response = await axios.delete(`http://localhost:8000/image_metadata/${id}`);
 
       if (response.status === 200) {
         // Cập nhật lại danh sách sau khi xóa
         setImages(images.filter(image => image.id !== id));
+        setShowModalDelete(false);
       } else {
         alert('Failed to delete image');
       }
@@ -186,7 +198,7 @@ const App: React.FC = () => {
           <ImageItem
             key={image.id}
             image={image}
-            onDelete={handleDeleteImage}
+            onDelete={() => openConfirmDeleteDialog(image)}
             onEdit={() => openModalForEdit(image)}
           />
         ))}
@@ -245,6 +257,26 @@ const App: React.FC = () => {
             onClick={currentImage ? handleUpdateImage : handleCreateImage}
           >
             {currentImage ? 'Update' : 'Create'}
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Modal Confirm Delete */}
+      <Modal show={showModalDelete} onHide={closeDialog}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Deletion</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {currentImage && (
+            <p>Are you sure you want to delete"?</p>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={closeDialog}>
+            No
+          </Button>
+          <Button variant="danger" onClick={handleDeleteImage}>
+            Yes
           </Button>
         </Modal.Footer>
       </Modal>
